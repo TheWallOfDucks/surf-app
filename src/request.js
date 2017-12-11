@@ -158,14 +158,6 @@ class Request {
                             + 'Response: ' + '\n' + JSON.stringify(response.body, null, 2));
                     }
 
-                    //Handle parsing of the response body
-                    // if (response.body.length > 0) {
-                    //     (this.contentType === 'application/json' || options['headers']['Accept'] == 'application/json') ? response.body = JSON.parse(response.body)
-                    //         : this.contentType === 'application/xml' || 'text/xml' ? this.xmlToJSON(response.body, (res) => { response.body = res })
-                    //             : this.contentType === 'text/html' ? response.body = response.body
-                    //                 : reject(`Unrecognized Content-Type: ${options['headers']['Content-Type']}`);
-                    // }
-
                     //If resolveWithBodyOnly is turned on then only return the response body
                     this.resolveWithBodyOnly ? resolve(response.body) : resolve(response);
                 });

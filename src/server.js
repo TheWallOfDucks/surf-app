@@ -27,13 +27,11 @@ app.get('/report', (req, res) => {
             });
 
             //Get the report description
-            $('.item').each(function (i, elem) {
-                let items = [];
-                items[i] = $(this).text();
-
-                if (i == 5) {
-                    body.desc = items[i].split(":").pop().trim();
-                }
+            $('#wbMainReport .item').each(function (i, elem) {
+                $('.date', $(this)).remove();
+                $('h3', $(this)).remove();
+                $('.time', $(this)).remove('.time');
+                body.desc = $(this).text().split(":").pop().trim();           
             });
 
             //Get the logos
