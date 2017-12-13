@@ -1,14 +1,11 @@
 let cheerio = require('cheerio'),
-    express = require('express'),
-    app = express(),
-    https = require('./request');
+    https = require('./request'),
+    url = 'http://www.wblivesurf.com/',
+    Request = new https.request({ url: url, contentType: 'text/html' }),
+    logoCount = 0,
+    body = {};
 
-app.get('/report', (req, res) => {
-
-    let url = 'http://www.wblivesurf.com/',
-        Request = new https.request({ url: url, contentType: 'text/html' }),
-        logoCount = 0,
-        body = {};
+exports.handler = (event, context, callback) => {
 
     Request.promise()
         .then(response => {
@@ -30,8 +27,8 @@ app.get('/report', (req, res) => {
             $('#wbMainReport .item').each(function (i, elem) {
                 $('.date', $(this)).remove();
                 $('h3', $(this)).remove();
-                $('.time', $(this)).remove('.time');
-                body.desc = $(this).text().split(":").pop().trim();           
+                $('.time', $(this)).remove();
+                body.desc = $(this).text().split(":").pop().trim();
             });
 
             //Get the logos
@@ -82,18 +79,11 @@ app.get('/report', (req, res) => {
 
             });
 
-            res.send(body);
+            callback(null, body);
 
         })
         .catch(err => {
-            res.sendStatus(500);
+            callback(null, err);
         });
 
-});
-
-app.listen('8081')
-console.log('Listening on port 8081');
-
-module.exports = {
-    app: app
 }
