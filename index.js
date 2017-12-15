@@ -9,6 +9,10 @@ exports.handler = (event, context, callback) => {
 
     request(url, function (error, response, body) {
 
+        /**
+         * @todo Add error handling
+         */
+
         data.isBase64Encoded = false;
         data.statusCode = response.statusCode;
         data.headers = {
@@ -49,9 +53,9 @@ exports.handler = (event, context, callback) => {
                 logoCount += 1;
             }
 
-            data.body.logoCount = logoCount;
-
         }).attr('class');
+
+        data.body.logoCount = logoCount;
 
         //Get other information
         $('p', '#wbMainRating').each(function (i, elem) {
