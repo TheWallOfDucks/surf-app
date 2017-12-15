@@ -1,18 +1,19 @@
 var cheerio = require('cheerio'),
     request = require('request'),
     url = 'http://www.wblivesurf.com/',
-    logoCount = 0,
     data = {};
 
 exports.handler = (event, context, callback) => {
+
+    var logoCount = 0;
 
     request(url, function (error, response, body) {
 
         data.isBase64Encoded = false;
         data.statusCode = response.statusCode;
         data.headers = {
-            "Access-Control-Allow-Origin" : "*",
-            "Access-Control-Allow-Credentials" : true
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true
         };
         data.body = {};
 
@@ -85,7 +86,7 @@ exports.handler = (event, context, callback) => {
             }
 
         });
-        
+
         data.body = JSON.stringify(data.body);
 
         callback(null, data);
