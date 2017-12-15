@@ -8,18 +8,26 @@ exports.handler = (event, context, callback) => {
 
     request(url, function (error, response, body) {
 
+        data.isBase64Encoded = false;
+        data.statusCode = response.statusCode;
+        data.headers = {
+            "Access-Control-Allow-Origin" : "*",
+            "Access-Control-Allow-Credentials" : true
+        };
+        data.body = {};
+
         var $ = cheerio.load(body);
 
         //Get the date of the report
         $('.date').filter(function () {
             var date = $(this).text().split('/');
-            data.date = date[1].trim();
+            data.body.date = date[1].trim();
         });
 
         //Get the time of the report
         $('.time').filter(function () {
             var time = $(this).text().split('/');
-            data.time = time[0].trim();
+            data.body.time = time[0].trim();
         });
 
         //Get the report description
@@ -27,7 +35,7 @@ exports.handler = (event, context, callback) => {
             $('.date', $(this)).remove();
             $('h3', $(this)).remove();
             $('.time', $(this)).remove();
-            data.desc = $(this).text().split(":").pop().trim();
+            data.body.desc = $(this).text().split(":").pop().trim();
         });
 
         //Get the logos
@@ -40,7 +48,7 @@ exports.handler = (event, context, callback) => {
                 logoCount += 1;
             }
 
-            data.logoCount = logoCount;
+            data.body.logoCount = logoCount;
 
         }).attr('class');
 
@@ -51,34 +59,36 @@ exports.handler = (event, context, callback) => {
 
             switch (info[0]) {
                 case 'Swell Size':
-                    data.size = info[1].trim();
+                    data.body.size = info[1].trim();
                     break;
                 case 'Water Surface':
-                    data.surface = info[1].trim();
+                    data.body.surface = info[1].trim();
                     break;
                 case 'Water Temp':
-                    data.waterTemp = info[1].trim();
+                    data.body.waterTemp = info[1].trim();
                     break;
                 case 'Wind':
-                    data.wind = info[1].trim();
+                    data.body.wind = info[1].trim();
                     break;
                 case 'High Tide':
-                    data.highTide = `${info[1]}:${info[2]}:${info[3]}`.trim();
+                    data.body.highTide = `${info[1]}:${info[2]}:${info[3]}`.trim();
                     break;
                 case 'Low Tide':
-                    data.lowTide = `${info[1]}:${info[2]}:${info[3]}`.trim();
+                    data.body.lowTide = `${info[1]}:${info[2]}:${info[3]}`.trim();
                     break;
                 case 'Sunrise':
-                    data.sunrise = `${info[1]}:${info[2]}:${info[3]}`.trim();
+                    data.body.sunrise = `${info[1]}:${info[2]}:${info[3]}`.trim();
                     break;
                 case 'Sunset':
-                    data.sunset = `${info[1]}:${info[2]}:${info[3]}`.trim();
+                    data.body.sunset = `${info[1]}:${info[2]}:${info[3]}`.trim();
                     break;
             }
 
         });
+        
+        data.body = JSON.stringify(data.body);
 
-        callback(data);
+        callback(null, data);
 
     });
 
